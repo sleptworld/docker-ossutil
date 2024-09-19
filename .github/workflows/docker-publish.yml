@@ -1,0 +1,24 @@
+name: Docker Build and Push
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # 匹配语义化版本标签，如 v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # 使用 Git 标签作为 Docker 镜像的版本号
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/ossutil:${{ github.ref }} .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/ossutil:${{ github.ref }}
