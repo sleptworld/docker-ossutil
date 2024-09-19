@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'  # 匹配语义化版本标签，如 v1.0.0
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to build'
+        required: true
+        default: 'latest'
 
 jobs:
   build:
